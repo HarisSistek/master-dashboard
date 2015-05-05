@@ -1,0 +1,244 @@
+{% extends "common/base.html" %}
+
+{% block title %}NSA{% endblock %}
+
+{% block main %}
+
+<style>
+.cssanimations .stream-live-animation {
+  display: block;
+  height: 16px;
+  width: 16px;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  border-radius: 16px;
+  padding: 0;
+  border: 5px solid #b01;
+  float: left;
+  position: absolute;
+  left: -7px;
+  -webkit-animation: stream-live-animation 1.9s infinite ease-out;
+  -webkit-transform: scale(.1,.1);
+  -moz-transform: scale(.1,.1);
+  -moz-animation: stream-live-animation 1.9s infinite ease-out;
+}
+.cssanimations .stream-live-animation-dot {
+  display: block;
+  position: absolute;
+  top: 11px;
+  left: 4px;
+  height: 4px;
+  width: 4px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-radius: 4px;
+  background-color: #b01;
+}
+.stream-pulse {
+  top: -4px;
+  left: 7px;
+}
+.stream-pulse {
+  height: 18px;
+  width: 18px;
+  position: absolute;
+  display: block;
+}
+.blink {
+    animation: blink 1s steps(5, start) infinite;
+    -webkit-animation: blink 1s steps(5, start) infinite;
+}
+@keyframes blink {
+    to {
+    color: #FF0000;
+    <!--visibility: hidden;-->
+    }
+}
+@-webkit-keyframes blink {
+    to {
+    color: #FF0000;
+    <!--visibility: hidden;-->
+    }
+}
+
+<!--body{-->
+    <!--animation: test 1s steps(5, start) infinite;-->
+    <!---webkit-animation: test 1s steps(5, start) infinite;-->
+<!--}-->
+
+<!--@keyframes test {-->
+    <!--to {-->
+        <!--background-color: #FF0000;-->
+    <!--}-->
+<!--}-->
+
+</style>
+
+<!-- Main row -->
+<div class="row">
+  <div>
+  <div class="col-lg-10" style="float:left;">
+      <h1 class="page-header">Time left to delivery: <div class="blink" id="countdown"></div></h1>
+  </div>
+  <div class="col-rg-2" style="float:right;">
+    <h1 class="page-header" style="padding-bottom: 0; margin: 20px 0 0 !important;"><div id="theweather"></div></h1>
+  </div>
+  </div>
+  <div style="float: clear;"></div>
+  <div>
+  <div class="col-md-7">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4><i class="fa fa-fw fa-gift"></i> # Ruter</h4>
+      </div>
+      <div class="panel-body">
+        <div id="ruter" style="font-size: 25px;">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-5" style="padding-right:0;">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4><i class="fa fa-fw fa-gift"></i>
+                <!--<div class="stream-pulse">-->
+                    <!--<span class="stream-live-animation"></span>-->
+                    <!--<span class="stream-live-animation-dot"></span>-->
+                <!--</div>-->
+                # Breaking News</h4>
+        </div>
+        <div class="panel-body" style="padding-top: 0;">
+            <div id="news" style="font-size: 19px;">
+
+            </div>
+        </div>
+
+    </div>
+  </div>
+  </div>
+</div>
+
+<div class="row col-md-12">
+    <div>
+    <div class="panel panel-default">
+        <div class="panel-heading" style="padding:0 0 0 0; padding-left:10px;">
+            <h4><i class="fa fa-fw fa-gift" id="tegneserie"></i></h4>
+        </div>
+        <div id="panel-body" style="padding-top: 0;">
+            <div id="xkcd" style=""></div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<script> CountDownTimer('05/18/2015 11:59 PM', 'countdown');
+
+    function CountDownTimer(dt, id)
+    {
+        var end = new Date(dt);
+
+        var _second = 1000;
+        var _minute = _second * 60;
+        var _hour = _minute * 60;
+        var _day = _hour * 24;
+        var timer;
+
+        function showRemaining() {
+            var now = new Date();
+            var distance = end - now;
+            if (distance < 0) {
+
+                clearInterval(timer);
+                document.getElementById(id).innerHTML = 'You should have DELIVERED!';
+
+                return;
+            }
+            var days = Math.floor(distance / _day);
+            var hours = Math.floor((distance % _day) / _hour);
+            var minutes = Math.floor((distance % _hour) / _minute);
+            var seconds = Math.floor((distance % _minute) / _second);
+
+            document.getElementById(id).innerHTML = days + ' days ';
+            document.getElementById(id).innerHTML += hours + ' hrs ';
+            document.getElementById(id).innerHTML += minutes + ' mins ';
+            document.getElementById(id).innerHTML += seconds + ' secs';
+        }
+
+        timer = setInterval(showRemaining, 1000);
+    }
+
+    var nr = 0;
+    get_ruter();
+    get_weather();
+    get_news();
+    //get_xkcd();
+    get_lunch();
+    window.setInterval(function(){
+        get_ruter();
+        get_weather();
+        get_news();
+    },60000);
+    
+    window.setInterval(function(){
+        //get_xkcd(); 
+        get_lunch();
+    },4*60*60*1000)
+
+    function get_ruter(){
+        $.getJSON("/get_ruter", function(inn){
+            document.getElementById("ruter").innerHTML = "";
+            for(var i in inn){
+                text = "<p style='padding: 0; margin: 0;'>" + inn[i] + "</p>";
+                document.getElementById("ruter").innerHTML += text;
+            }
+            document.getElementById("ruter").innerHTML += "<br/>Last updated: " + new Date().toISOString();
+        }).done(function(inn){
+        });
+        $.get("/get_sun", function(inn){
+            document.getElementById("ruter").innerHTML += "<p><b>" + inn + "</b></p>";
+        }).done(function(inn){  });
+    }
+    function get_weather(){
+        $.getJSON("/get_weather_now", function(inn){
+                document.getElementById("theweather").innerHTML = "<img src='" + inn[2] + "' /> " + inn[1] + "°";
+        })
+    }
+    function get_news(){
+        $.get("/get_toppsaker", function(data){
+            content = "<table class='table' style='margin-bottom:0;'>";
+            var nr = 0;
+            $(data).find("item").each(function () {
+                if(nr < 8){
+                    var el = $(this);
+                    var time = new Date(el.find("pubDate").text());
+                    content += "<tr><td><b>" + time.getHours() + ":" + (time.getMinutes()<10?'0':'') + time.getMinutes() + "</b></td><td><b>" + el.find("title").text() +  "</b></td></tr>";
+                    //content += /*"<p style='padding: 0; margin: 0; font-size: 20px;'>"*/ + el.find("title").text() + "</p>"
+                    nr += 1;
+                }
+            });
+            content += "</table>";
+            document.getElementById("news").innerHTML = content;
+
+        })
+    }
+    function get_xkcd(){
+        $.getJSON("/get_xkcd/random", function(inn){
+                document.getElementById("tegneserie").innerHTML = "XKCD: " + inn['alt']
+                document.getElementById("xkcd").innerHTML = "<img src='" + inn['img'] + "' /> "; 
+        })
+    }
+
+    function get_lunch(){
+        $.getJSON("/get_lunch", function(inn){
+                document.getElementById("tegneserie").innerHTML = "Lunch  "
+                document.getElementById("xkcd").innerHTML = "<img src='" + inn['img'] + "' /> "; 
+        })
+    }
+
+</script>
+{% endblock %}
