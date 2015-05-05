@@ -12,9 +12,9 @@ providers:
  - XKCD and Lunch comic caching && inline placement
 
 ## NOTICE
-This product is not intended for further use.
+This product is __not__ intended for further use.
 Used as a informational screen during the writing of my master thesis, and
-written in a hurry :)
+written in a hurry (for personal use) :)
 
 Beware of a lot of dirty awefull inline css!!!! Yes, I hate myself too.
 Time-to-market, blabla.
